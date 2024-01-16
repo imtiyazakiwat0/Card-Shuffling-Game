@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <title>Card Shuffling Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('/img/background-image.jpg');
+            /* Replace 'background.jpg' with your image file name */
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .card {
+            width: 120px;
+            height: 180px;
+            text-align: center;
+            border: 2px solid #4a90e2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .selected {
+            font-weight: bold;
+            animation: glowing 1.5s infinite;
+        }
+
+        .big-card {
+            width: 200px;
+            height: 300px;
+        }
+
+        .popup {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background: linear-gradient(to bottom right, #ff7e5f, #feb47b);
+            color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 0px 20px 0px #333;
+        }
+
+        .popup-content h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .popup-content p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+
+        .popup-content button {
+            background-color: #333;
+            color: #fff;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .popup-content button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="popup" id="instructionPopup">
+        <div class="popup-content">
+            <h2>Welcome to the Card Shuffling Game!</h2>
+            <p>Think of a number between 1 to 21 and select the card containing your number.</p>
+            <button id="startButton">Start</button>
+        </div>
+    </div>
+
+    <div class="text-center mb-4">
+        <h1 class="text-3xl font-bold text-blue-600">Card Shuffling Game</h1>
+    </div>
+
+    <div class="card-container">
+        <div class="card" id="cardA" onclick="selectCard('a')">1, 2, 3, 4, 5, 6, 7</div>
+        <div class="card" id="cardB" onclick="selectCard('b')">8, 9, 10, 11, 12, 13, 14</div>
+        <div class="card" id="cardC" onclick="selectCard('c')">15, 16, 17, 18, 19, 20, 21</div>
+    </div>
+
+    <div class="text-center mt-4">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" id="continueButton"
+            disabled>Continue</button>
+    </div>
+
+    <div class="popup" id="resultPopup">
+        <div class="popup-content">
+            <h2>Congratulations!</h2>
+            <div class="big-card" id="popupBigCard">--</div>
+            <button id="replayButton">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedCard = null;
+        const a = [1, 2, 3, 4, 5, 6, 7];
+        const b = [8, 9, 10, 11, 12, 13, 14];
+        const c = [15, 16, 17, 18, 19, 20, 21];
+        let loop = 0;
+
+        const instructionPopup = document.getElementById("instructionPopup");
+        const startButton = document.getElementById("startButton");
+        const continueButton = document.getElementById("continueButton");
+        const resultPopup = document.getElementById("resultPopup");
+
+        startButton.addEventListener("click", () => {
+            instructionPopup.style.display = "none";
+        });
+
+        function selectCard(card) {
+            if (selectedCard) {
+                document.getElementById(`card${selectedCard.toUpperCase()}`).classList.remove('selected');
+            }
+            selectedCard = card;
+            document.getElementById(`card${card.toUpperCase()}`).classList.add('selected');
+            continueButton.removeAttribute('disabled');
+        }
+
+        continueButton.addEventListener('click', () => {
+            if (selectedCard) {
+                let d;
+                if (selectedCard === 'a') {
+                    d = b.concat(a, c);
+                } else if (selectedCard === 'b') {
+                    d = a.concat(b, c);
+                } else if (selectedCard === 'c') {
+                    d = a.concat(c, b);
+                }
+
+                let j = 0;
+                a.length = 0;
+                b.length = 0;
+                c.length = 0;
+
+                for (let x = 0; x < 7; x++) {
+                    a.push(d[j]);
+                    b.push(d[j + 1]);
+                    c.push(d[j + 2]);
+                    j += 3;
+                }
+
+                loop++;
+
+                if (loop === 3) {
+                    document.getElementById('popupBigCard').textContent = 'Your guessed number is: ' + b[3];
+                    resultPopup.style.display = 'flex';
+                } else {
+                    document.getElementById(`card${selectedCard.toUpperCase()}`).classList.remove('selected');
+                    selectedCard = null;
+
+                    document.getElementById('cardA').textContent = a.join(', ');
+                    document.getElementById('cardB').textContent = b.join(', ');
+                    document.getElementById('cardC').textContent = c.join(', ');
+
+                    continueButton.setAttribute('disabled', true);
+                }
+            }
+        });
+
+        document.getElementById('replayButton').addEventListener('click', () => {
+            loop = 0;
+            selectedCard = null;
+            document.getElementById('cardA').textContent = a.join(', ');
+            document.getElementById('cardB').textContent = b.join(', ');
+            document.getElementById('cardC').textContent = c.join(', ');
+            continueButton.setAttribute('disabled', true);
+            resultPopup.style.display = 'none';
+            document.getElementById('cardA').classList.remove('selected');
+            document.getElementById('cardB').classList.remove('selected');
+            document.getElementById('cardC').classList.remove('selected');
+            instructionPopup.style.display = "flex";
+        });
+
+        window.onload = function () {
+            if (performance.navigation.type === 1) {
+                // Page is refreshed, don't show congratulations message
+                resultPopup.style.display = 'none';
+            }
+        };
+
+    </script>
+</body>
+
+</html>

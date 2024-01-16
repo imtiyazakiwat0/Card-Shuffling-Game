@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <title>Card Shuffling Game</title>
+
+</head>
+
+<body>
+    <div class="popup" id="instructionPopup">
+        <div class="popup-content">
+            <h2>Welcome to the Card Shuffling Game!</h2>
+            <p>Think of a number between 1 to 21 and select the card containing your number.</p>
+            <p><a href="instructions.html" target="_blank" class="learn-more-link">Learn More...</a></p>
+            <button id="startButton">Start</button>
+        </div>
+    </div>    
+
+    <div class="text-center mb-4">
+        <h1 class="text-3xl font-bold text-blue-600">Card Shuffling Game</h1>
+    </div>
+
+    <div class="card-container">
+        <div class="card" id="cardA" onclick="selectCard('a')">1, 2, 3, 4, 5, 6, 7</div>
+        <div class="card" id="cardB" onclick="selectCard('b')">8, 9, 10, 11, 12, 13, 14</div>
+        <div class="card" id="cardC" onclick="selectCard('c')">15, 16, 17, 18, 19, 20, 21</div>
+    </div>
+
+    <div class="text-center mt-4">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" id="continueButton"
+            disabled>Continue</button>
+    </div>
+
+    <div class="popup" id="resultPopup" style="display: none;">
+        <div class="popup-content">
+            <h2>Congratulations!</h2>
+            <div class="big-card" id="popupBigCard">--</div>
+            <button id="replayButton">Play Again</button>
+        </div>
+    </div>
+    
+<script src="script.js"></script>
+</body>
+
+</html>
